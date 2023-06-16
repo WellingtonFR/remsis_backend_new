@@ -5,9 +5,7 @@ const validation = require("../validations/transportadorValidation");
 module.exports = {
   async index(req, res) {
     try {
-      const data = await connection("transportadores")
-        .select("*")
-        .orderBy("filialAtendida", "desc");
+      const data = await connection("transportadores").select("*").orderBy("filialAtendida", "desc");
       return res.json(data);
     } catch (err) {
       res.status(400).send("Erro ao localizar os transportadores");
@@ -15,18 +13,13 @@ module.exports = {
   },
   async create(req, res) {
     const { nomeTransportador, placaVeiculo, filialAtendida } = req.body;
-    // const created_at = moment().format();
     const _placaVeiculo = placaVeiculo.toUpperCase().trim();
 
-    try {
-      await validation.transportadorSchema.validateAsync({
-        nomeTransportador: nomeTransportador,
-        placaVeiculo: _placaVeiculo,
-        filialAtendida: filialAtendida,
-      });
-    } catch (err) {
-      return res.status(400).send({ message: err.details[0].message });
-    }
+    await validation.transportadorSchema.validateAsync({
+      nomeTransportador: nomeTransportador,
+      placaVeiculo: _placaVeiculo,
+      filialAtendida: filialAtendida,
+    });
 
     try {
       const transferenciaId = await connection("transportadores").insert({
@@ -44,15 +37,11 @@ module.exports = {
     // const updated_at = moment().format();
     const _placaVeiculo = placaVeiculo.toUpperCase().trim();
 
-    await validation.transportadorSchema
-      .validateAsync({
-        nomeTransportador,
-        placaVeiculo: _placaVeiculo,
-        filialAtendida,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.transportadorSchema.validateAsync({
+      nomeTransportador,
+      placaVeiculo: _placaVeiculo,
+      filialAtendida,
+    });
 
     try {
       const { id } = req.params;
@@ -69,17 +58,11 @@ module.exports = {
   async delete(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
-    const verificarTransportador = await connection("transportadores")
-      .select("nomeTransportador")
-      .where({ id: id });
+    const verificarTransportador = await connection("transportadores").select("nomeTransportador").where({ id: id });
 
     if (verificarTransportador.length === 0) {
       return res.status(400).send({ message: "Tranportador não encontrado" });
@@ -104,9 +87,7 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar o transportador" });
+        return res.status(400).send({ message: "Erro ao localizar o transportador" });
       });
   },
   async findByName(req, res) {
@@ -118,9 +99,7 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar o transportador" });
+        return res.status(400).send({ message: "Erro ao localizar o transportador" });
       });
   },
   async findByFilialAtendida(req, res) {
@@ -133,9 +112,7 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar o transportador" });
+        return res.status(400).send({ message: "Erro ao localizar o transportador" });
       });
   },
   async find(req, res) {
@@ -148,9 +125,7 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar o transportador" });
+        return res.status(400).send({ message: "Erro ao localizar o transportador" });
       });
   },
 };

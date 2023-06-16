@@ -5,9 +5,7 @@ const validation = require("../validations/conferenteValidation");
 module.exports = {
   async index(req, res) {
     try {
-      const data = await connection("conferentes")
-        .select("*")
-        .orderBy("nomeConferente");
+      const data = await connection("conferentes").select("*").orderBy("nomeConferente");
       return res.json(data);
     } catch (err) {
       return res.status(400).send({ message: "Contate o administrador" });
@@ -17,23 +15,15 @@ module.exports = {
     const { nomeConferente, idConferente } = req.body;
     //const created_at = moment().format("MM DD YYYY, h:mm:ss a");
 
-    await validation.conferenteSchema
-      .validateAsync({
-        idConferente: idConferente,
-        nomeConferente: nomeConferente,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.conferenteSchema.validateAsync({
+      idConferente: idConferente,
+      nomeConferente: nomeConferente,
+    });
 
     try {
-      const verificarConferente = await connection("conferentes")
-        .select("nomeConferente")
-        .where({ idConferente: idConferente });
+      const verificarConferente = await connection("conferentes").select("nomeConferente").where({ idConferente: idConferente });
       if (verificarConferente.length !== 0) {
-        return res
-          .status(400)
-          .send({ message: "Conferente já está cadastrado" });
+        return res.status(400).send({ message: "Conferente já está cadastrado" });
       }
 
       await connection("conferentes").insert({
@@ -48,17 +38,11 @@ module.exports = {
   async delete(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
-    const verificarConferente = await connection("conferentes")
-      .select("nomeConferente")
-      .where({ id: id });
+    const verificarConferente = await connection("conferentes").select("nomeConferente").where({ id: id });
     if (verificarConferente.length === 0) {
       return res.status(400).send({ message: "Conferente não encontrado" });
     }
@@ -76,13 +60,9 @@ module.exports = {
   async findByIdConferente(req, res) {
     const { idConferente } = req.params;
 
-    const validate = await validation.id
-      .validateAsync({
-        id: idConferente,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    const validate = await validation.id.validateAsync({
+      id: idConferente,
+    });
 
     await connection("conferentes")
       .select()

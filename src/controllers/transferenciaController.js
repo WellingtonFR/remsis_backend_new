@@ -14,27 +14,20 @@ module.exports = {
     const data = req.body;
     try {
       const transferenciaId = await connection("transferencias").insert(data);
-      return res
-        .status(200)
-        .send({ message: "Inserido com sucesso", id: transferenciaId });
+      return res.status(200).send({ message: "Inserido com sucesso", id: transferenciaId });
     } catch (err) {
       return res.status(400).send("Contate o administrador" + err);
     }
   },
   async update(req, res) {
-
     const data = req.body;
 
     try {
       const { id } = req.params;
 
-      await validation.id
-        .validateAsync({
-          id: id,
-        })
-        .catch((err) => {
-          return res.status(400).send({ message: err.details[0].message });
-        });
+      await validation.id.validateAsync({
+        id: id,
+      });
 
       await connection("transferencias").where({ id: id }).update();
       return res.status(200).send({ message: "Alterado com sucesso" });
@@ -45,13 +38,9 @@ module.exports = {
   async delete(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
     await connection("transferencias")
       .where({ id: id })
@@ -60,21 +49,15 @@ module.exports = {
         return res.status(204).send("Excluído com sucesso");
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao excluir transferência" });
+        return res.status(400).send({ message: "Erro ao excluir transferência" });
       });
   },
   async findById(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
     await connection("transferencias")
       .select("*")
@@ -83,43 +66,29 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar transferência" });
+        return res.status(400).send({ message: "Erro ao localizar transferência" });
       });
   },
   async search(req, res) {
     const { initialDate, finalDate, numeroControle, filialDestino } = req.body;
 
-    await validation.searchSchema
-      .validateAsync({
-        initialDate: initialDate,
-        finalDate: finalDate,
-        numeroControle: numeroControle,
-        filialDestino: filialDestino,
-      })
+    await validation.searchSchema.validateAsync({
+      initialDate: initialDate,
+      finalDate: finalDate,
+      numeroControle: numeroControle,
+      filialDestino: filialDestino,
+    });
 
-    if (
-      initialDate === "" &&
-      finalDate === "" &&
-      numeroControle === "" &&
-      filialDestino === ""
-    ) {
-      return res
-        .status(400)
-        .send({ message: "É necessário preencher algum campo da pesquisa" });
+    if (initialDate === "" && finalDate === "" && numeroControle === "" && filialDestino === "") {
+      return res.status(400).send({ message: "É necessário preencher algum campo da pesquisa" });
     }
 
     if (initialDate !== "" && finalDate === "") {
-      return res
-        .status(400)
-        .send({ message: "É necessário preencher a data final" });
+      return res.status(400).send({ message: "É necessário preencher a data final" });
     }
 
     if (initialDate > finalDate) {
-      return res
-        .status(400)
-        .send({ message: "Data inicial maior que a final" });
+      return res.status(400).send({ message: "Data inicial maior que a final" });
     }
 
     await connection("transferencias")
@@ -140,10 +109,7 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar" + err });
+        return res.status(400).send({ message: "Erro ao localizar" + err });
       });
-
   },
 };

@@ -11,12 +11,13 @@ module.exports = {
     }
   },
   async create(req, res) {
-    const data = req.body;
+    const data = req.body.formFields;
     try {
-      const transferenciaId = await connection("entrada").insert(data);
-      return res
-        .status(200)
-        .send({ message: "Inserido com sucesso", id: transferenciaId });
+      data.forEach(async (item) => {
+        console.log(item);
+        await connection("entrada").insert(item);
+      });
+      return res.status(200).send({ message: "Inserido com sucesso" });
     } catch (err) {
       return res.status(400).send({ message: "Contate o administrador" + err });
     }
@@ -27,13 +28,9 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      await validation.id
-        .validateAsync({
-          id: id,
-        })
-        .catch((err) => {
-          return res.status(400).send({ message: err.details[0].message });
-        });
+      await validation.id.validateAsync({
+        id: id,
+      });
 
       await connection("entrada").where({ id: id }).update();
       return res.status(200).send({ message: "Alterado com sucesso" });
@@ -44,13 +41,9 @@ module.exports = {
   async delete(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
     await connection("entrada")
       .where({ id: id })
@@ -59,21 +52,15 @@ module.exports = {
         return res.status(204).send("Excluído com sucesso");
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao excluir transferência" });
+        return res.status(400).send({ message: "Erro ao excluir transferência" });
       });
   },
   async findById(req, res) {
     const { id } = req.params;
 
-    await validation.id
-      .validateAsync({
-        id: id,
-      })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    await validation.id.validateAsync({
+      id: id,
+    });
 
     await connection("entrada")
       .select("*")
@@ -82,36 +69,29 @@ module.exports = {
         return res.json(data);
       })
       .catch((err) => {
-        return res
-          .status(400)
-          .send({ message: "Erro ao localizar transferência" });
+        return res.status(400).send({ message: "Erro ao localizar transferência" });
       });
   },
   async search(req, res) {
-    const { initialDate, finalDate, filialDestino } = req.body;
+    const { initialDate, finalDate, filialOrigem, filialDestino } = req.body;
 
     await validation.searchSchema.validateAsync({
       initialDate: initialDate,
       finalDate: finalDate,
+      filialOrigem: filialOrigem,
       filialDestino: filialDestino,
     });
 
-    if (initialDate === "" && finalDate === "" && filialDestino === "") {
-      return res
-        .status(400)
-        .send({ message: "É necessário preencher algum campo da pesquisa" });
+    if (initialDate === "" && finalDate === "" && filialDestino === "" && filialOrigem === "") {
+      return res.status(400).send({ message: "É necessário preencher algum campo da pesquisa" });
     }
 
     if (initialDate !== "" && finalDate === "") {
-      return res
-        .status(400)
-        .send({ message: "É necessário preencher a data final" });
+      return res.status(400).send({ message: "É necessário preencher a data final" });
     }
 
     if (initialDate > finalDate) {
-      return res
-        .status(400)
-        .send({ message: "Data inicial maior que a final" });
+      return res.status(400).send({ message: "Data inicial maior que a final" });
     }
 
     await connection("entrada")
@@ -119,6 +99,9 @@ module.exports = {
       .modify(function (queryBuilder) {
         if (initialDate !== "" && finalDate !== "") {
           queryBuilder.whereBetween("dataAtual", [initialDate, finalDate]);
+        }
+        if (filialDestino !== "") {
+          queryBuilder.where("filialOrigem", filialOrigem);
         }
         if (filialDestino !== "") {
           queryBuilder.where("filialDestino", filialDestino);

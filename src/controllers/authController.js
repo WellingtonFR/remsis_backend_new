@@ -5,13 +5,9 @@ const validation = require("../validations/userValidation");
 // const moment = require("moment");
 
 function generateToken(params = []) {
-  return jwt.sign(
-    { userId: params.id },
-    process.env.SECRET_JWT,
-    {
-      expiresIn: 86400,
-    }
-  );
+  return jwt.sign({ userId: params.id }, process.env.SECRET_JWT, {
+    expiresIn: 86400,
+  });
 }
 
 module.exports = {
@@ -23,15 +19,10 @@ module.exports = {
       nomeUsuario: nomeUsuario,
       idUsuario: idUsuario,
       senha: senha,
-    })
-      .catch((err) => {
-        return res.status(400).send({ message: err.details[0].message });
-      });
+    });
 
     try {
-      const verificaUsuario = await connection("usuarios")
-        .select()
-        .where({ idUsuario: idUsuario });
+      const verificaUsuario = await connection("usuarios").select().where({ idUsuario: idUsuario });
 
       if (verificaUsuario.length !== 0) {
         return res.status(400).send({ message: "Usuário já está cadastrado" });
@@ -55,9 +46,7 @@ module.exports = {
   async login(req, res) {
     const { nomeUsuario, senha } = req.body;
 
-    const verificaUsuario = await connection("usuarios")
-      .select("hashedPassword")
-      .where({ nomeUsuario: nomeUsuario });
+    const verificaUsuario = await connection("usuarios").select("hashedPassword").where({ nomeUsuario: nomeUsuario });
 
     if (verificaUsuario.length === 0) {
       return res.status(400).send({ message: "Usuário não encontrado" });
