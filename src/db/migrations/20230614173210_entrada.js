@@ -6,6 +6,7 @@ exports.up = function (knex) {
         table.text("dataAtual").notNullable();
         table.text("filialOrigem").notNullable();
         table.text("conferente").notNullable();
+        table.text("doca").notNullable();
         table.text("notaFiscal").notNullable();
         table.text("codigo").notNullable();
         table.text("descricaoProduto").notNullable();

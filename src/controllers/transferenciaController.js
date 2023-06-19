@@ -16,7 +16,7 @@ module.exports = {
       const transferenciaId = await connection("transferencias").insert(data);
       return res.status(200).send({ message: "Inserido com sucesso", id: transferenciaId });
     } catch (err) {
-      return res.status(400).send("Contate o administrador" + err);
+      return res.status(400).send({ message: "Contate o administrador" + err });
     }
   },
   async update(req, res) {

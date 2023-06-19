@@ -23,7 +23,7 @@ module.exports = {
     }
   },
   async update(req, res) {
-    const data = req.body;
+    const data = req.body.formFields;
 
     try {
       const { id } = req.params;
