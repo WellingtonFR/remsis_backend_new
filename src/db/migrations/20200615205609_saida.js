@@ -1,7 +1,7 @@
 exports.up = function (knex) {
-  knex.schema.hasTable('transferencias').then(function (exists) {
+  knex.schema.hasTable("saida").then(function (exists) {
     if (!exists) {
-      return knex.schema.createTable("transferencias", function (table) {
+      return knex.schema.createTable("saida", function (table) {
         table.increments();
         table.text("dataAtual").notNullable();
         table.text("numeroControle").notNullable();
@@ -174,11 +174,11 @@ exports.up = function (knex) {
         //
         table.string("created_at");
         table.string("updated_at");
-      })
+      });
     }
-  })
-}
+  });
+};
 
 exports.down = function (knex) {
-  return knex.schema.dropTable("transferencias");
+  return knex.schema.dropTable("saida");
 };

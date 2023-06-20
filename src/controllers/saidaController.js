@@ -1,5 +1,5 @@
 const connection = require("../db/connection");
-const validation = require("../validations/transferenciaValidation");
+const validation = require("../validations/saidaValidation");
 
 module.exports = {
   async index(req, res) {
@@ -29,10 +29,10 @@ module.exports = {
         id: id,
       });
 
-      await connection("transferencias").where({ id: id }).update();
+      await connection("transferencias").where({ id: id }).update(data);
       return res.status(200).send({ message: "Alterado com sucesso" });
     } catch (err) {
-      return res.status(400).send({ message: "Contate o administrador" });
+      return res.status(400).send({ message: "Contate o administrador" + err });
     }
   },
   async delete(req, res) {
