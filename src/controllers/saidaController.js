@@ -4,7 +4,7 @@ const validation = require("../validations/saidaValidation");
 module.exports = {
   async index(req, res) {
     try {
-      const data = await connection("transferencias").orderBy("created_at");
+      const data = await connection("saida").orderBy("created_at");
       return res.json(data);
     } catch (err) {
       res.status(400).send("Erro ao localizar as transferências");
@@ -13,7 +13,7 @@ module.exports = {
   async create(req, res) {
     const data = req.body;
     try {
-      const transferenciaId = await connection("transferencias").insert(data);
+      const transferenciaId = await connection("saida").insert(data);
       return res.status(200).send({ message: "Inserido com sucesso", id: transferenciaId });
     } catch (err) {
       return res.status(400).send({ message: "Contate o administrador" + err });
@@ -29,7 +29,7 @@ module.exports = {
         id: id,
       });
 
-      await connection("transferencias").where({ id: id }).update(data);
+      await connection("saida").where({ id: id }).update(data);
       return res.status(200).send({ message: "Alterado com sucesso" });
     } catch (err) {
       return res.status(400).send({ message: "Contate o administrador" + err });
@@ -42,7 +42,7 @@ module.exports = {
       id: id,
     });
 
-    await connection("transferencias")
+    await connection("saida")
       .where({ id: id })
       .delete()
       .then(() => {
@@ -59,7 +59,7 @@ module.exports = {
       id: id,
     });
 
-    await connection("transferencias")
+    await connection("saida")
       .select("*")
       .where("id", id)
       .then((data) => {
@@ -91,11 +91,11 @@ module.exports = {
       return res.status(400).send({ message: "Data inicial maior que a final" });
     }
 
-    await connection("transferencias")
+    await connection("saida")
       .select("*")
       .modify(function (queryBuilder) {
         if (initialDate !== "" && finalDate !== "") {
-          queryBuilder.whereBetween("dataAtual", [initialDate, finalDate]);
+          queryBuilder.whereBetween("data", [initialDate, finalDate]);
         }
         if (numeroControle !== "") {
           queryBuilder.where("numeroControle", numeroControle);

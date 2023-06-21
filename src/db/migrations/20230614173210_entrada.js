@@ -3,7 +3,7 @@ exports.up = function (knex) {
     if (!exists) {
       return knex.schema.createTable("entrada", function (table) {
         table.increments();
-        table.text("dataAtual").notNullable();
+        table.text("data").notNullable();
         table.text("filialOrigem").notNullable();
         table.text("conferente").notNullable();
         table.text("doca").notNullable();
@@ -13,9 +13,10 @@ exports.up = function (knex) {
         table.text("quantidadeProduto").notNullable();
         table.text("filialDestino").notNullable();
         table.text("observacao");
+        table.boolean("enviado").defaultTo(false);
 
-        table.string("created_at");
-        table.string("updated_at");
+        table.string("created_at").defaultTo(knex.fn.now());
+        table.string("updated_at").defaultTo(knex.fn.now());
       });
     }
   });

@@ -98,14 +98,15 @@ module.exports = {
       .select("*")
       .modify(function (queryBuilder) {
         if (initialDate !== "" && finalDate !== "") {
-          queryBuilder.whereBetween("dataAtual", [initialDate, finalDate]);
+          queryBuilder.whereBetween("data", [initialDate, finalDate]);
         }
-        if (filialDestino !== "") {
+        if (filialOrigem !== "") {
           queryBuilder.where("filialOrigem", filialOrigem);
         }
         if (filialDestino !== "") {
           queryBuilder.where("filialDestino", filialDestino);
         }
+        queryBuilder.where("enviado", false);
       })
       .orderBy("created_at", "desc")
       .then((data) => {

@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  knex.schema.hasTable('filiais').then(function (exists) {
+  knex.schema.hasTable("filiais").then(function (exists) {
     if (!exists) {
       return knex.schema.createTable("filiais", function (table) {
         table.increments();
@@ -10,11 +10,12 @@ exports.up = function (knex) {
         table.string("cidade").notNullable();
         table.string("estado").notNullable();
         table.string("nomeFantasia").notNullable();
-        table.timestamps(true, true);
+        table.timestamp("created_at").defaultTo(knex.fn.now());
+        table.timestamp("updated_at").defaultTo(knex.fn.now());
       });
-    };
+    }
   });
-}
+};
 
 exports.down = function (knex) {
   return knex.schema.dropTable("filiais");
