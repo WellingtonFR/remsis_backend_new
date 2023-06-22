@@ -23,6 +23,7 @@ const filiais_route = require("./routes/filiais");
 const saida_route = require("./routes/saida");
 const transportador_route = require("./routes/transportador");
 const entrada_route = require("./routes/entrada");
+const estoque_route = require("./routes/estoque");
 const auth_route = require("./routes/auth");
 
 app.use("/", index_route);
@@ -31,6 +32,7 @@ app.use("/filiais", filiais_route);
 app.use("/saida", saida_route);
 app.use("/transportador", transportador_route);
 app.use("/entrada", entrada_route);
+app.use("/estoque", estoque_route);
 app.use("/auth", auth_route);
 
 app.use(function (req, res, next) {
