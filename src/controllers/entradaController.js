@@ -116,4 +116,28 @@ module.exports = {
         return res.status(400).send({ message: "Erro ao localizar" + err });
       });
   },
+  async findByFilialDestino(req, res) {
+    const { filialDestino } = req.params;
+
+    await validation.searchSchema.validateAsync({
+      filialDestino: filialDestino,
+    });
+
+    if (filialDestino === "") {
+      return res.status(400).send({ message: "Filial de destino não encontrada" });
+    }
+
+    await connection("entrada")
+      .select("*")
+      .where("filialDestino", filialDestino)
+      .where("enviado", false)
+      .orderBy("created_at", "desc")
+      .then((data) => {
+        console.log(data);
+        return res.json(data);
+      })
+      .catch((err) => {
+        return res.status(400).send({ message: "Erro ao localizar" + err });
+      });
+  },
 };

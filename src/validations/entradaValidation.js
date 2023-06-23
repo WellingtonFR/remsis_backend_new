@@ -29,7 +29,7 @@ const searchSchema = Joi.object({
     "string.empty": "O número de controle não pode estar vazio",
     "any.required": "O número de controle deve ser preenchido",
   }),
-  filialDestino: Joi.string().allow("").max(30).messages({
+  filialDestino: Joi.string().allow("").max(10).messages({
     "string.base": "O campo número da filial deve conter somente números",
     "string.max": "Número de caracteres excedido",
     "string.empty": "O número da filial não pode estar vazio",
