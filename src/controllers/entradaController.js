@@ -14,7 +14,6 @@ module.exports = {
     const data = req.body.formFields;
     try {
       data.forEach(async (item) => {
-        console.log(item);
         await connection("entrada").insert(item);
       });
       return res.status(200).send({ message: "Inserido com sucesso" });
@@ -75,6 +74,11 @@ module.exports = {
   async search(req, res) {
     const { initialDate, finalDate, filialOrigem, filialDestino } = req.body;
 
+    console.log(initialDate + " " + finalDate);
+
+    let _finalDate = new Date(finalDate);
+    _finalDate.setDate(_finalDate.getDate() + 1);
+
     await validation.searchSchema.validateAsync({
       initialDate: initialDate,
       finalDate: finalDate,
@@ -98,7 +102,7 @@ module.exports = {
       .select("*")
       .modify(function (queryBuilder) {
         if (initialDate !== "" && finalDate !== "") {
-          queryBuilder.whereBetween("data", [initialDate, finalDate]);
+          queryBuilder.whereBetween("created_at", [initialDate, _finalDate]);
         }
         if (filialOrigem !== "") {
           queryBuilder.where("filialOrigem", filialOrigem);
@@ -133,7 +137,6 @@ module.exports = {
       .where("enviado", false)
       .orderBy("created_at", "desc")
       .then((data) => {
-        console.log(data);
         return res.json(data);
       })
       .catch((err) => {

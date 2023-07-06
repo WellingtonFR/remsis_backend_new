@@ -8,17 +8,17 @@ const id = Joi.object({
 });
 
 const searchSchema = Joi.object({
-  initialDate: Joi.string().allow("").max(10).min(10).messages({
+  initialDate: Joi.string().allow("").max(10).min(8).messages({
     "string.base": "A data inicial está em formato inválido",
-    "string.min": "A data inicial deve ter 10 caracteres",
-    "string.max": "A data inicial deve ter 10 caracteres",
+    "string.min": "A data inicial deve ter entre 8 10 caracteres",
+    "string.max": "A data inicial deve ter entre 8 e 10 caracteres",
     "string.empty": "A data inicial não pode estar vazio",
     "any.required": "A data inicial deve ser preenchido",
   }),
-  finalDate: Joi.string().allow("").max(10).min(10).messages({
+  finalDate: Joi.string().allow("").max(10).min(8).messages({
     "string.base": "A data final está em formato inválido",
-    "string.min": "A data final deve ter 10 caracteres",
-    "string.max": "A data final deve ter 10 caracteres",
+    "string.min": "A data final deve ter entre 8 e 10 caracteres",
+    "string.max": "A data final deve ter entre8 e 10 caracteres",
     "string.empty": "A data final não pode estar vazio",
     "any.required": "A data final deve ser preenchido",
   }),

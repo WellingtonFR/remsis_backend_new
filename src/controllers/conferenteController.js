@@ -13,7 +13,6 @@ module.exports = {
   },
   async create(req, res) {
     const { nomeConferente, idConferente } = req.body;
-    //const created_at = moment().format("MM DD YYYY, h:mm:ss a");
 
     await validation.conferenteSchema.validateAsync({
       idConferente: idConferente,

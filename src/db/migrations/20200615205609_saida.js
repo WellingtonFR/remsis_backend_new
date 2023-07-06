@@ -3,7 +3,6 @@ exports.up = function (knex) {
     if (!exists) {
       return knex.schema.createTable("saida", function (table) {
         table.increments();
-        table.text("data").notNullable();
         table.text("numeroControle").notNullable();
         table.text("filialDestino").notNullable();
         table.text("nomeFilialDestino").notNullable();

@@ -75,6 +75,9 @@ module.exports = {
   async search(req, res) {
     const { initialDate, finalDate, filialOrigem, filialDestino } = req.body;
 
+    let _finalDate = new Date(finalDate);
+    _finalDate.setDate(_finalDate.getDate() + 1);
+
     await validation.searchSchema.validateAsync({
       initialDate: initialDate,
       finalDate: finalDate,
@@ -98,7 +101,7 @@ module.exports = {
       .select("*")
       .modify(function (queryBuilder) {
         if (initialDate !== "" && finalDate !== "") {
-          queryBuilder.whereBetween("data", [initialDate, finalDate]);
+          queryBuilder.whereBetween("created_at", [initialDate, _finalDate]);
         }
         if (filialOrigem !== "") {
           queryBuilder.where("filialOrigem", filialOrigem);
@@ -108,7 +111,7 @@ module.exports = {
         }
         queryBuilder.where("enviado", false);
       })
-      .orderBy("created_at", "desc")
+      .orderBy("created_at", "asc")
       .then((data) => {
         return res.json(data);
       })
