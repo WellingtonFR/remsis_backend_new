@@ -74,10 +74,10 @@ module.exports = {
   async search(req, res) {
     const { initialDate, finalDate, filialOrigem, filialDestino } = req.body;
 
-    console.log(initialDate + " " + finalDate);
-
     let _finalDate = new Date(finalDate);
     _finalDate.setDate(_finalDate.getDate() + 1);
+
+    console.log(initialDate + " " + _finalDate);
 
     await validation.searchSchema.validateAsync({
       initialDate: initialDate,

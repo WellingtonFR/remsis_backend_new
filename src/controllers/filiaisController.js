@@ -157,4 +157,34 @@ module.exports = {
         return res.status(400).send("Filial não encontrada");
       });
   },
+  async search(req, res) {
+    const { numeroFilial, cidade } = req.body;
+
+    await validation.searchFiliaisSchema.validateAsync({
+      numeroFilial: numeroFilial,
+      cidade: cidade,
+    });
+
+    if (numeroFilial === "" && cidade === "") {
+      return res.status(400).send({ message: "É necessário preencher algum campo da pesquisa" });
+    }
+
+    await connection("filiais")
+      .select("*")
+      .modify(function (queryBuilder) {
+        if (numeroFilial !== "") {
+          queryBuilder.where("numeroFilial", numeroFilial);
+        }
+        if (cidade !== "") {
+          queryBuilder.whereILike("cidade", `%${cidade}%`);
+        }
+      })
+      .orderBy("created_at", "desc")
+      .then((data) => {
+        return res.json(data);
+      })
+      .catch((err) => {
+        return res.status(400).send({ message: "Erro ao localizar" + err });
+      });
+  },
 };

@@ -128,4 +128,34 @@ module.exports = {
         return res.status(400).send({ message: "Erro ao localizar o transportador" });
       });
   },
+  async search(req, res) {
+    const { nomeTransportador, filialAtendida } = req.body;
+
+    await validation.transportadorSearchSchema.validateAsync({
+      nomeTransportador: nomeTransportador,
+      filialAtendida: filialAtendida,
+    });
+
+    if (nomeTransportador === "" && filialAtendida === "") {
+      return res.status(400).send({ message: "É necessário preencher algum campo da pesquisa" });
+    }
+
+    await connection("transportadores")
+      .select("*")
+      .modify(function (queryBuilder) {
+        if (nomeTransportador !== "") {
+          queryBuilder.whereILike("nomeTransportador", `%${nomeTransportador}%`);
+        }
+        if (filialAtendida !== "") {
+          queryBuilder.whereILike("filialAtendida", `%${filialAtendida}%`);
+        }
+      })
+      .orderBy("created_at", "desc")
+      .then((data) => {
+        return res.json(data);
+      })
+      .catch((err) => {
+        return res.status(400).send({ message: "Erro ao localizar" + err });
+      });
+  },
 };

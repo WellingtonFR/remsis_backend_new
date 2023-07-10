@@ -23,7 +23,7 @@ const filiaisSchema = Joi.object({
     "string.base": "O complemento está em formato inválido",
     "string.max": "O complemento deve ter no máximo 50 caracteres",
   }),
-  cidade: Joi.string().max(100).required().messages({
+  cidade: Joi.string().max(50).required().messages({
     "string.base": "O campo cidade está em formato inválido",
     "string.max": "O campo cidade deve ter no máximo 50 caracteres",
     "string.empty": "O campo cidade não pode estar vazio",
@@ -43,20 +43,29 @@ const filiaisSchema = Joi.object({
   }),
 });
 
+const searchFiliaisSchema = Joi.object({
+  numeroFilial: Joi.number().integer().max(999999999).messages({
+    "number.base": "O número da filial deve conter somente números",
+    "number.max": "Número de caracteres excedido",
+    "number.empty": "O número da filial não pode estar vazio",
+    "any.required": "O número da filial deve ser preenchido",
+  }),
+  cidade: Joi.string().max(50).messages({
+    "string.base": "O campo cidade está em formato inválido",
+    "string.max": "O campo cidade deve ter no máximo 50 caracteres",
+    "string.empty": "O campo cidade não pode estar vazio",
+    "any.required": "O campo cidade deve ser preenchido",
+  }),
+})
+  .keys()
+  .or("numeroFilial", "cidade");
+
 const id = Joi.object({
-  id: Joi
-    .number()
-    .integer()
-    .max(1000000000)
-    .messages({ "number.base": "O id precisa ser um número" }),
+  id: Joi.number().integer().max(1000000000).messages({ "number.base": "O id precisa ser um número" }),
 });
 
 const numeroFilialSchema = Joi.object({
-  numeroFilial: Joi
-    .number()
-    .integer()
-    .max(1000000000)
-    .messages({ "number.base": "O número da filial precisa ser um número" }),
+  numeroFilial: Joi.number().integer().max(1000000000).messages({ "number.base": "O número da filial precisa ser um número" }),
 });
 
-module.exports = { filiaisSchema, id, numeroFilialSchema };
+module.exports = { filiaisSchema, id, numeroFilialSchema, searchFiliaisSchema };
